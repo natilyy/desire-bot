@@ -23,6 +23,13 @@ for (const file of commandFiles) {
     }
 }
 
+client.buttons = new Map();
+const buttonFiles = fs.readdirSync('./buttons').filter(file => file.endsWith('.js'));
+for (const file of buttonFiles) {
+    const button = require(`./buttons/${file}`);
+    client.buttons.set(button.name, button);
+}
+
 //ready event
 client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
@@ -30,25 +37,38 @@ client.once(Events.ClientReady, readyClient => {
 
 //command handler
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
+	if (interaction.isChatInputCommand()) {
+		const command = interaction.client.commands.get(interaction.commandName);
 
-	const command = interaction.client.commands.get(interaction.commandName);
-
-	if (!command) {
-		console.error(`No command matching ${interaction.commandName} was found.`);
-		return;
-	}
-
-	try {
-		await command.execute(interaction, db);
-	} catch (error) {
-		console.error(error);
-		if (interaction.replied || interaction.deferred) {
-			await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
-		} else {
-			await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+		if (!command) {
+			console.error(`No command matching ${interaction.commandName} was found.`);
+			return;
 		}
+	
+		try {
+			await command.execute(interaction, db);
+		} catch (error) {
+			console.error(error);
+			if (interaction.replied || interaction.deferred) {
+				await interaction.followUp({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+			} else {
+				await interaction.reply({ content: 'There was an error while executing this command!', flags: MessageFlags.Ephemeral });
+			}
+		}
+	} else if (interaction.isButton()) {
+		const buttonId = interaction.customId.split("_")[0];
+        const buttonHandler = interaction.client.buttons.get(buttonId);
+
+        if (!buttonHandler) return;
+        try {
+            await buttonHandler.execute(interaction, db);
+        } catch (error) {
+            console.error(error);
+            await interaction.reply({ content: 'There was an error processing this action.',  flags: MessageFlags.Ephemeral });
+        }
 	}
+
+	
 });
 
 client.login(token);
