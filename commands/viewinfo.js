@@ -76,7 +76,7 @@ module.exports = {
                 const actionRow = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
-                        .setCustomId(`view_carstash_${citizenid}`) // Unique ID for the button
+                        .setCustomId(`viewcarstash_${citizenid}`) // Unique ID for the button
                         .setLabel("🚗 Car Stash: " + name)
                         .setStyle(ButtonStyle.Primary)
                 );
