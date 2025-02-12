@@ -73,7 +73,7 @@ module.exports = {
                 embeds.push(embed);
             }
             return interaction.reply({
-                content: "Inventory of " + target.displayName, 
+                content: "Information of: " + target.displayName, 
                 embeds: embeds
             });
         }
