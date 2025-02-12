@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, EmbedBuilder, MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, InteractionContextType, EmbedBuilder, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -22,6 +22,7 @@ module.exports = {
             return interaction.reply({ content: "User not found in database - please ping <@530740868358078494> for help!",  flags: MessageFlags.Ephemeral });
         } else {
             const embeds = [];
+            const components = [];
             for (let i = 0; i < rows.length; i++) {
                 let data = rows[i];
                 let citizenid = data.citizenid;
@@ -71,10 +72,22 @@ module.exports = {
                 .setDescription(description);
 
                 embeds.push(embed);
+
+                const actionRow = new ActionRowBuilder()
+                .addComponents(
+                    new ButtonBuilder()
+                        .setCustomId(`view_carstash_${citizenid}`) // Unique ID for the button
+                        .setLabel("🚗 Car Stash: " + name)
+                        .setStyle(ButtonStyle.Primary)
+                );
+
+                components.push(actionRow);
+
             }
             return interaction.reply({
                 content: "Information of: " + target.displayName, 
-                embeds: embeds
+                embeds: embeds,
+                components: components
             });
         }
 	},
