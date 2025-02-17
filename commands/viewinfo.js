@@ -51,18 +51,20 @@ module.exports = {
                 description += "__Money__ \n```Cash: $" + money.cash + "\nBank: $" + money.bank + "```\n__Inventory__\n```";
 
                 let inventory = JSON.parse(data.inventory);
-                console.log(inventory);
+
                 if (inventory === null) {
                     description += "Empty";
-                } 
-
-                for (let j = 0; j < inventory.length; j++) {
-                    let item = inventory[j];
-                    description += "\n" + item.name + ": " + item.count;
-                    if (item.metadata != null) {
-                        description += " (" + JSON.stringify(item.metadata) + ")";
+                } else {
+                    for (let j = 0; j < inventory.length; j++) {
+                        let item = inventory[j];
+                        description += "\n" + item.name + ": " + item.count;
+                        if (item.metadata != null) {
+                            description += " (" + JSON.stringify(item.metadata) + ")";
+                        }
                     }
                 }
+
+               
 
                 description += "```";
 
