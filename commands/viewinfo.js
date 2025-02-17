@@ -51,8 +51,8 @@ module.exports = {
                 description += "__Money__ \n```Cash: $" + money.cash + "\nBank: $" + money.bank + "```\n__Inventory__\n```";
 
                 let inventory = JSON.parse(data.inventory);
-
-                if (inventory.length === 0) {
+                console.log(inventory);
+                if (inventory === null) {
                     description += "Empty";
                 } 
 
